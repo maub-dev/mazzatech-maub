@@ -14,7 +14,7 @@ public sealed class AuthController(IAuthTokenService tokenService) : MainControl
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public ActionResult<LoginResponse> Login(LoginRequest request)
     {
-        const string email = "dev@martech.com";
+        const string email = "dev@mazzatech.com";
         const string password = "Senha@123";
         if (!string.Equals(request.Email, email, StringComparison.OrdinalIgnoreCase) ||
             !string.Equals(request.Password, password, StringComparison.Ordinal))
