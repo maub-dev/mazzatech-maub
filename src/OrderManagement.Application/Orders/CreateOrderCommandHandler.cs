@@ -12,10 +12,11 @@ public sealed class CreateOrderCommandHandler(IOrderRepository orderRepository)
         var order = Order.Create(
             request.CustomerId,
             request.Items.Select(item => (item.ProductName, item.Quantity, item.UnitPrice)));
+        var result = order.ToDto();
 
         await orderRepository.AddAsync(order, cancellationToken);
         await orderRepository.SaveChangesAsync(cancellationToken);
 
-        return order.ToDto();
+        return result;
     }
 }

@@ -25,6 +25,23 @@ public sealed class OrderHandlersTests
     }
 
     [Fact]
+    public async Task CreateOrder_does_not_persist_when_response_mapping_overflows()
+    {
+        var repository = new InMemoryOrderRepository();
+        var handler = new CreateOrderCommandHandler(repository);
+
+        await Assert.ThrowsAsync<OverflowException>(() =>
+            handler.Handle(
+                new CreateOrderCommand(
+                    Guid.NewGuid(),
+                    [new CreateOrderItem("Large item", int.MaxValue, decimal.MaxValue)]),
+                CancellationToken.None));
+
+        Assert.Empty(repository.Orders);
+        Assert.False(repository.SaveChangesCalled);
+    }
+
+    [Fact]
     public async Task CancelOrder_cancels_a_pending_order()
     {
         var order = Order.Create(Guid.NewGuid(), [("Keyboard", 1, 99.95m)]);

@@ -37,7 +37,7 @@ public sealed class Order
     {
         if (Status != OrderStatus.Pending)
         {
-            throw new InvalidOperationException("Only pending orders can be cancelled.");
+            throw new OrderConflictException("Only pending orders can be cancelled.");
         }
 
         Status = OrderStatus.Cancelled;

@@ -1,4 +1,6 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderManagement.Domain;
 
 namespace OrderManagement.Infrastructure.Persistence;
@@ -26,6 +28,11 @@ public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) :
         item.HasKey(entity => entity.Id);
         item.Property(entity => entity.ProductName).HasMaxLength(200).IsRequired();
         item.Property(entity => entity.Quantity).IsRequired();
-        item.Property(entity => entity.UnitPrice).HasConversion<double>().IsRequired();
+        item.Property(entity => entity.UnitPrice)
+            .HasConversion(new ValueConverter<decimal, string>(
+                value => value.ToString(CultureInfo.InvariantCulture),
+                value => decimal.Parse(value, CultureInfo.InvariantCulture)))
+            .HasColumnType("TEXT")
+            .IsRequired();
     }
 }

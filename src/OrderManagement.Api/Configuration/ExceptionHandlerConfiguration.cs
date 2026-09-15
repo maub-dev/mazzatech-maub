@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using OrderManagement.Domain;
 
 namespace OrderManagement.Api.Configuration;
 
@@ -23,12 +24,17 @@ public static class ExceptionHandlerConfiguration
                 return;
             }
 
-            if (exception is InvalidOperationException invalidOperationException)
+            if (exception is OrderConflictException conflictException)
             {
                 context.Response.StatusCode = StatusCodes.Status409Conflict;
-                await context.Response.WriteAsJsonAsync(new { title = invalidOperationException.Message });
+                await context.Response.WriteAsJsonAsync(new { title = conflictException.Message });
                 return;
             }
+
+            var logger = context.RequestServices
+                .GetRequiredService<ILoggerFactory>()
+                .CreateLogger("OrderManagement.Api.ExceptionHandler");
+            logger.LogError(exception, "Unhandled exception while processing {Path}.", context.Request.Path);
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new { title = "An unexpected error occurred." });
