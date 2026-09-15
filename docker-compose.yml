@@ -1,0 +1,16 @@
+services:
+  orders-api:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__OrdersDatabase: "Data Source=/app/data/orders.db"
+      Jwt__Issuer: "OrderManagement.Api"
+      Jwt__Audience: "OrderManagement.Client"
+      Jwt__Key: "development-only-key-change-before-production-2026"
+    volumes:
+      - orders-data:/app/data
+
+volumes:
+  orders-data:
