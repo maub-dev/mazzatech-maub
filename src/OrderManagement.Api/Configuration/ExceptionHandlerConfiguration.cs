@@ -1,0 +1,39 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+
+namespace OrderManagement.Api.Configuration;
+
+public static class ExceptionHandlerConfiguration
+{
+    public static IApplicationBuilder UseExceptionHandlerConfiguration(this IApplicationBuilder app)
+    {
+        app.UseExceptionHandler(exceptionApp => exceptionApp.Run(async context =>
+        {
+            var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+            if (exception is ValidationException validationException)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    title = "One or more validation errors occurred.",
+                    errors = validationException.Errors
+                        .GroupBy(error => error.PropertyName)
+                        .ToDictionary(group => group.Key, group => group.Select(error => error.ErrorMessage).ToArray())
+                });
+                return;
+            }
+
+            if (exception is InvalidOperationException invalidOperationException)
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                await context.Response.WriteAsJsonAsync(new { title = invalidOperationException.Message });
+                return;
+            }
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(new { title = "An unexpected error occurred." });
+        }));
+
+        return app;
+    }
+}
