@@ -29,6 +29,9 @@ dotnet run --project src\OrderManagement.Api
 The API applies pending EF Core migrations automatically during startup and stores
 the SQLite database in `orders.db` in the working directory.
 
+Swagger UI is available at `http://localhost:5070/swagger` when using the HTTP
+launch profile. Use **Authorize** to provide the JWT returned by `/auth/login`.
+
 Authenticate first:
 
 ```powershell

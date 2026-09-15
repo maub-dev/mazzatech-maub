@@ -10,10 +10,12 @@ builder.Services.AddApiConfiguration();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
 
 app.UseExceptionHandlerConfiguration();
+app.UseSwaggerConfiguration();
 app.UseAuthenticationConfiguration();
 app.MapControllers();
 
