@@ -26,28 +26,26 @@ include the associated exception.
 
 Install the .NET 10 SDK, then:
 
-```powershell
+```shell
 dotnet restore
-dotnet run --project src\OrderManagement.Api
+dotnet run --project src/OrderManagement.Api
 ```
 
 The API applies pending EF Core migrations automatically during startup and stores
-the SQLite database in `orders.db` in the working directory.
+data in the SQLite database file `orders.db` in the working directory.
 
 Swagger UI is available at `http://localhost:5070/swagger` when using the HTTP
 launch profile. Use **Authorize** to provide the JWT returned by `/auth/login`.
 
-The fixed login credentials are intended for local/demo use only.
+For Swagger authentication, use these local/demo credentials:
 
-Authenticate first:
+- **Email:** `dev@mazzatech.com`
+- **Password:** `Senha@123`
 
-```powershell
-$login = Invoke-RestMethod -Method Post http://localhost:5070/auth/login `
-  -ContentType application/json `
-  -Body '{"email":"dev@mazzatech.com","password":"Senha@123"}'
-```
+After signing in through `/auth/login`, copy the returned access token into the
+**Authorize** dialog. The fixed credentials are intended for local/demo use only.
 
-Use `$login.accessToken` as a Bearer token for:
+Available endpoints:
 
 | Method  | Route                            |
 | ------- | -------------------------------- |
@@ -59,7 +57,7 @@ Use `$login.accessToken` as a Bearer token for:
 
 ## Run with Docker
 
-```powershell
+```shell
 docker compose up --build
 ```
 
@@ -68,6 +66,6 @@ named `orders-data` volume.
 
 ## Tests
 
-```powershell
+```shell
 dotnet test
 ```
