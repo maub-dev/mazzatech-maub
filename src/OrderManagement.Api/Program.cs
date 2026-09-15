@@ -3,8 +3,15 @@ using OrderManagement.Api.Configuration;
 using OrderManagement.Application;
 using OrderManagement.Infrastructure;
 using OrderManagement.Infrastructure.Persistence;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((_, _, configuration) => configuration
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console());
 
 builder.Services.AddApiConfiguration();
 builder.Services.AddApplication();

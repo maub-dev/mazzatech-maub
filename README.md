@@ -16,6 +16,8 @@ orchestration and business logic.
 
 `TotalAmount` is calculated by `Order` from its items. An order cannot have no
 items, zero/negative quantities or prices, and only pending orders can be cancelled.
+The MediatR pipeline uses Serilog to log every command/query request and response
+with elapsed execution time; failed requests include the associated exception.
 
 ## Run locally
 
